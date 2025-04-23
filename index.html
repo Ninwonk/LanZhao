@@ -26,103 +26,95 @@
     <!-- 当日记录 内容 -->
     <div id="content-today">
       <!-- 记录事件 -->
-      <section class="mb-8">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">记录事件</h2>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <form id="eventForm" class="space-y-4">
-            <!-- 时间 & 类型 -->
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-600 mb-1">时间</label>
-                <input type="time" id="eventTime" class="w-full border rounded-md p-2" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-600 mb-1">事件类型</label>
-                <select id="eventType" class="w-full border rounded-md p-2">
-                  <option value="feeding">喂养</option>
-                  <option value="diaper">换尿布</option>
-                  <option value="nutrition">营养品</option>
-                  <option value="care">洗护</option>
-                </select>
-              </div>
-            </div>
-            <!-- 喂养 -->
-            <div id="feedingFields" class="space-y-4">
-              <div class="grid grid-cols-4 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">喂养方法</label>
-                  <select id="feedMethod" class="w-full border rounded-md p-2">
-                    <option>母乳</option>
-                    <option>奶粉</option>
-                    <option>辅食</option>
-                    <option>正常餐食</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">数量 (ml)</label>
-                  <input type="number" id="feedAmount" class="w-full border rounded-md p-2" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">时长 (分钟)</label>
-                  <input type="number" id="feedDuration" class="w-full border rounded-md p-2" />
-                </div>
-              </div>
-            </div>
-            <!-- 换尿布 -->
-            <div id="diaperFields" class="space-y-4 hidden">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">尿布类型</label>
-                  <select id="diaperType" class="w-full border rounded-md p-2">
-                    <option>小便</option>
-                    <option>大便</option>
-                    <option>混合</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
-                  <input type="text" id="diaperNotes" class="w-full border rounded-md p-2" />
-                </div>
-              </div>
-            </div>
-            <!-- 营养品 -->
-            <div id="nutritionFields" class="space-y-4 hidden">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">营养品类型</label>
-                  <select id="nutritionType" class="w-full border rounded-md p-2">
-                    <option>维生素D</option>
-                    <option>益生菌</option>
-                    <option>铁剂</option>
-                    <option>其他</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">备注/自定义</label>
-                  <input type="text" id="nutritionNotes" class="w-full border rounded-md p-2" placeholder="如其他营养品名称" />
-                </div>
-              </div>
-            </div>
-            <!-- 洗护 -->
-            <div id="careFields" class="space-y-4 hidden">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">洗护类型</label>
-                  <select id="careType" class="w-full border rounded-md p-2">
-                    <option>洗澡</option>
-                    <option>洗脸</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
-                  <input type="text" id="careNotes" class="w-full border rounded-md p-2" />
-                </div>
-              </div>
-            </div>
-            <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">添加事件</button>
-          </form>
+<section class="mb-8">
+  <h2 class="text-xl font-semibold text-gray-700 mb-4">记录事件</h2>
+  <div class="bg-white p-6 rounded-lg shadow">
+    <form id="eventForm" class="space-y-4">
+      <!-- 时间 & 类型 -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">时间</label>
+          <input type="time" id="eventTime" class="w-full border rounded-md p-2" />
         </div>
-      </section>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">事件类型</label>
+          <select id="eventType" class="w-full border rounded-md p-2">
+            <option value="feeding">喂养</option>
+            <option value="diaper">换尿布</option>
+            <option value="nutrition">营养品</option>
+            <option value="care">洗护</option>
+          </select>
+        </div>
+      </div>
+      <!-- 喂养 -->
+      <div id="feedingFields" class="flex flex-col sm:flex-row gap-4">
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">喂养方法</label>
+          <select id="feedMethod" class="w-full border rounded-md p-2">
+            <option>母乳</option>
+            <option>奶粉</option>
+            <option>辅食</option>
+            <option>正常餐食</option>
+          </select>
+        </div>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">数量 (ml)</label>
+          <input type="number" id="feedAmount" class="w-full border rounded-md p-2" />
+        </div>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">时长 (分钟)</label>
+          <input type="number" id="feedDuration" class="w-full border rounded-md p-2" />
+        </div>
+      </div>
+      <!-- 换尿布 -->
+      <div id="diaperFields" class="flex flex-col sm:flex-row gap-4 hidden">
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">尿布类型</label>
+          <select id="diaperType" class="w-full border rounded-md p-2">
+            <option>小便</option>
+            <option>大便</option>
+            <option>混合</option>
+          </select>
+        </div>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
+          <input type="text" id="diaperNotes" class="w-full border rounded-md p-2" />
+        </div>
+      </div>
+      <!-- 营养品 -->
+      <div id="nutritionFields" class="flex flex-col sm:flex-row gap-4 hidden">
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">营养品类型</label>
+          <select id="nutritionType" class="w-full border rounded-md p-2">
+            <option>维生素AD</option>
+            <option>益生菌</option>
+            <option>铁剂</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">备注/自定义</label>
+          <input type="text" id="nutritionNotes" class="w-full border rounded-md p-2" placeholder="如其他营养品名称" />
+        </div>
+      </div>
+      <!-- 洗护 -->
+      <div id="careFields" class="flex flex-col sm:flex-row gap-4 hidden">
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">洗护类型</label>
+          <select id="careType" class="w-full border rounded-md p-2">
+            <option>洗澡</option>
+            <option>洗脸</option>
+          </select>
+        </div>
+        <div class="w-full">
+          <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
+          <input type="text" id="careNotes" class="w-full border rounded-md p-2" />
+        </div>
+      </div>
+      <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 w-full sm:w-auto">添加事件</button>
+    </form>
+  </div>
+</section>
 
       <!-- 每日指标 -->
       <section class="mb-8">
@@ -155,23 +147,26 @@
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">当日记录概览</h2>
         <div class="bg-white p-6 rounded-lg shadow">
-          <table class="w-full text-left">
-            <thead>
-              <tr>
-                <th class="py-2 px-4 border-b">时间</th>
-                <th class="py-2 px-4 border-b">类型</th>
-                <th class="py-2 px-4 border-b">详情</th>
-                <th class="py-2 px-4 border-b">营养品</th>
-                <th class="py-2 px-4 border-b">洗护</th>
-                <th class="py-2 px-4 border-b">身高(cm)</th>
-                <th class="py-2 px-4 border-b">体重(kg)</th>
-                <th class="py-2 px-4 border-b">备注</th>
-                <th class="py-2 px-4 border-b">操作</th> 
-              </tr>
-            </thead>
-            <tbody id="todayTable"><!-- 动态行 --></tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 border-b">时间</th>
+                  <th class="py-2 px-4 border-b">类型</th>
+                  <th class="py-2 px-4 border-b">详情</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
+                  <th class="py-2 px-4 border-b">备注</th>
+                  <th class="py-2 px-4 border-b">操作</th>
+                </tr>
+              </thead>
+              <tbody id="todayTable"><!-- 动态行 --></tbody>
+            </table>
+          </div>
         </div>
+   
       </section>
     </div>
 
@@ -181,15 +176,21 @@
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">汇总报告</h2>
         <div class="bg-white p-6 rounded-lg shadow space-y-4">
-          <div class="grid grid-cols-4 items-center gap-4">
-            <input type="date" id="reportStart" class="border rounded-md p-2" />
-            <input type="date" id="reportEnd"   class="border rounded-md p-2" />
-            <button id="generateReport" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">
+          <!-- <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4">
+            <input type="date" id="reportStart" class="border rounded-md p-2 w-full" />
+            <input type="date" id="reportEnd"   class="border rounded-md p-2 w-full" />
+            <button id="generateReport" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">
               生成报告
             </button>
-            <button id="exportExcel" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700">
+            <button id="exportExcel" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">
               导出Excel
             </button>
+          </div> -->
+          <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 mb-4">
+            <input type="date" id="reportStart" class="border rounded-md p-2 w-full" />
+            <input type="date" id="reportEnd" class="border rounded-md p-2 w-full" />
+            <button id="generateReport" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">生成报告</button>
+            <button id="exportExcel" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">导出Excel</button>
           </div>
           <div class="mt-6">
             <canvas id="weightChart" class="mb-6"></canvas>
@@ -204,23 +205,25 @@
   <h2 class="text-xl font-semibold text-gray-700">历史记录</h2>
   <button id="btn-refresh" class="text-indigo-600 hover:text-indigo-800">刷新</button>
 </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <table class="w-full text-left">
-            <thead>
-              <tr>
-                <th class="py-2 px-4 border-b">时间</th>
-                <th class="py-2 px-4 border-b">类型</th>
-                <th class="py-2 px-4 border-b">详情</th>
-                <th class="py-2 px-4 border-b">营养品</th>
-                <th class="py-2 px-4 border-b">洗护</th>
-                <th class="py-2 px-4 border-b">身高(cm)</th>
-                <th class="py-2 px-4 border-b">体重(kg)</th>
-                <th class="py-2 px-4 border-b">备注</th>
-              </tr>
-            </thead>
-            <tbody id="historyTable"><!-- 动态行 --></tbody>
-          </table>
-        </div>
+<div class="bg-white p-6 rounded-lg shadow">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">时间</th>
+          <th class="py-2 px-4 border-b">类型</th>
+          <th class="py-2 px-4 border-b">详情</th>
+          <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
+          <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
+          <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
+          <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
+          <th class="py-2 px-4 border-b">备注</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable"></tbody>
+    </table>
+  </div>
+</div>
       </section>
     </div>
   </div>
@@ -426,28 +429,25 @@ document.getElementById('generateReport')
   });
 
 
-// 加载历史记录（按顶部日期过滤，时间降序）
+// 渲染历史记录表格（同步隐藏列）
 async function loadHistoryRecords() {
   const start = document.getElementById('reportStart').value;
   const end   = document.getElementById('reportEnd').value;
   if (!start || !end) {
-    // 起止日期未选，清空表格
     document.getElementById('historyTable').innerHTML = '';
     return;
   }
 
-  // 1. 按时间段拉取历史数据
   const res = await fetch(`/api/history?start=${start}&end=${end}`);
   const rows = await res.json();
 
-  // 2. 按 date + time 降序
+  // 按 date + time 降序
   rows.sort((a, b) => {
     const dtA = `${a.date} ${a.time||'00:00'}`;
     const dtB = `${b.date} ${b.time||'00:00'}`;
     return dtB.localeCompare(dtA);
   });
 
-  // 3. 渲染到表格
   const tbody = document.getElementById('historyTable');
   tbody.innerHTML = '';
   rows.forEach(r => {
@@ -456,10 +456,10 @@ async function loadHistoryRecords() {
       <td class="py-2 px-4 border-b">${r.date} ${r.time||''}</td>
       <td class="py-2 px-4 border-b">${typeMap[r.type] || ''}</td>
       <td class="py-2 px-4 border-b">${r.details || ''}</td>
-      <td class="py-2 px-4 border-b">${r.nutrition || ''}</td>
-      <td class="py-2 px-4 border-b">${r.care || ''}</td>
-      <td class="py-2 px-4 border-b">${r.height || ''}</td>
-      <td class="py-2 px-4 border-b">${r.weight || ''}</td>
+      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.nutrition || ''}</td>
+      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.care || ''}</td>
+      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.height || ''}</td>
+      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.weight || ''}</td>
       <td class="py-2 px-4 border-b">${r.remark || ''}</td>
     `;
     tbody.appendChild(tr);
@@ -518,6 +518,64 @@ async function loadHistoryRecords() {
     loadTodayRecords();
     e.target.reset();
   });
+
+  const tbody = document.getElementById('todayTable');
+tbody.innerHTML = '';
+
+// 判断是否小屏
+const isMobile = window.innerWidth < 640;
+
+if (isMobile) {
+  // 卡片式渲染
+  events.forEach(ev => {
+    const metInfo = `
+      <div class="flex flex-wrap gap-2 text-sm text-gray-500 mt-2">
+        ${met.height ? `<span>身高: ${met.height}cm</span>` : ''}
+        ${met.weight ? `<span>体重: ${met.weight}kg</span>` : ''}
+      </div>
+    `;
+    const card = document.createElement('tr');
+    card.className = "block mb-4";
+    card.innerHTML = `
+      <td class="block bg-white rounded-lg shadow p-4 mb-2">
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-semibold text-indigo-700">${ev.date} ${ev.time}</span>
+          <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">${typeMap[ev.type] || ''}</span>
+        </div>
+        <div class="mb-1"><span class="font-medium">详情：</span>${ev.details || ''}</div>
+        ${ev.nutrition ? `<div class="mb-1"><span class="font-medium">营养品：</span>${ev.nutrition}</div>` : ''}
+        ${ev.care ? `<div class="mb-1"><span class="font-medium">洗护：</span>${ev.care}</div>` : ''}
+        ${metInfo}
+        <div class="mb-1"><span class="font-medium">备注：</span>${ev.remark || ''}</div>
+        <div class="mt-2 text-right">
+          <button class="text-red-600 hover:underline delete-btn" data-id="${ev.id}">删除</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(card);
+  });
+} else {
+  // 表格渲染（原有方式）
+  events.forEach(ev => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="py-2 px-4 border-b">${ev.date} ${ev.time}</td>
+      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ''}</td>
+      <td class="py-2 px-4 border-b">${ev.details || ''}</td>
+      <td class="py-2 px-4 border-b">${ev.nutrition || ''}</td>
+      <td class="py-2 px-4 border-b">${ev.care || ''}</td>
+      <td class="py-2 px-4 border-b">${met.height || ''}</td>
+      <td class="py-2 px-4 border-b">${met.weight || ''}</td>
+      <td class="py-2 px-4 border-b">${ev.remark || ''}</td>
+      <td class="py-2 px-4 border-b">
+        <button class="text-red-600 hover:underline delete-btn" data-id="${ev.id}">
+          删除
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
   // 页面首次加载
   document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
