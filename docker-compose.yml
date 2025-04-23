@@ -9,5 +9,5 @@ services:
     environment:
       - NODE_ENV=production
     restart: always
-    # volumes:
-    #   - /data/lanzhao-record/baby.db:/usr/src/app/baby.db
+    volumes:
+      - /data/baby.db:/usr/src/app/baby.db

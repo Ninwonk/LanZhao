@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +10,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gray-100 font-sans">
   <div class="max-w-4xl mx-auto p-6">
     <!-- 头部 -->
@@ -20,133 +22,103 @@
     <!-- 导航 -->
     <nav class="flex border-b mb-6">
       <button id="btn-today" class="px-4 py-2 -mb-px border-b-2 border-indigo-600 text-indigo-600">当日记录</button>
-      <button id="btn-history" class="px-4 py-2 ml-4 -mb-px border-b-2 border-transparent text-gray-600 hover:text-indigo-600">历史与统计</button>
+      <button id="btn-history"
+        class="px-4 py-2 ml-4 -mb-px border-b-2 border-transparent text-gray-600 hover:text-indigo-600">历史与统计</button>
     </nav>
 
     <!-- 当日记录 内容 -->
     <div id="content-today">
       <!-- 记录事件 -->
-<section class="mb-8">
-  <h2 class="text-xl font-semibold text-gray-700 mb-4">记录事件</h2>
-  <div class="bg-white p-6 rounded-lg shadow">
-    <form id="eventForm" class="space-y-4">
-      <!-- 时间 & 类型 -->
-      <div class="flex flex-col sm:flex-row gap-4">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">时间</label>
-          <input type="time" id="eventTime" class="w-full border rounded-md p-2" />
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">记录事件</h2>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <form id="eventForm" class="space-y-4">
+            <!-- 时间 & 类型 -->
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">时间</label>
+                <input type="time" id="eventTime" class="w-full border rounded-md p-2" />
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">事件类型</label>
+                <select id="eventType" class="w-full border rounded-md p-2">
+                  <option value="feeding">喂养</option>
+                  <option value="diaper">换尿布</option>
+                  <option value="nutrition">营养品</option>
+                  <option value="care">洗护</option>
+                </select>
+              </div>
+            </div>
+            <!-- 喂养 -->
+            <div id="feedingFields" class="flex flex-col sm:flex-row gap-4">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">喂养方法</label>
+                <select id="feedMethod" class="w-full border rounded-md p-2">
+                  <option>母乳</option>
+                  <option>奶粉</option>
+                  <option>辅食</option>
+                  <option>正常餐食</option>
+                </select>
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">数量 (ml)</label>
+                <input type="number" id="feedAmount" class="w-full border rounded-md p-2" />
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">时长 (分钟)</label>
+                <input type="number" id="feedDuration" class="w-full border rounded-md p-2" />
+              </div>
+            </div>
+            <!-- 换尿布 -->
+            <div id="diaperFields" class="flex flex-col sm:flex-row gap-4 hidden">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">尿布类型</label>
+                <select id="diaperType" class="w-full border rounded-md p-2">
+                  <option>小便</option>
+                  <option>大便</option>
+                  <option>混合</option>
+                </select>
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
+                <input type="text" id="diaperNotes" class="w-full border rounded-md p-2" />
+              </div>
+            </div>
+            <!-- 营养品 -->
+            <div id="nutritionFields" class="flex flex-col sm:flex-row gap-4 hidden">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">营养品类型</label>
+                <select id="nutritionType" class="w-full border rounded-md p-2">
+                  <option>维生素AD</option>
+                  <option>益生菌</option>
+                  <option>铁剂</option>
+                  <option>其他</option>
+                </select>
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">备注/自定义</label>
+                <input type="text" id="nutritionNotes" class="w-full border rounded-md p-2" placeholder="如其他营养品名称" />
+              </div>
+            </div>
+            <!-- 洗护 -->
+            <div id="careFields" class="flex flex-col sm:flex-row gap-4 hidden">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">洗护类型</label>
+                <select id="careType" class="w-full border rounded-md p-2">
+                  <option>洗澡</option>
+                  <option>洗脸</option>
+                </select>
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
+                <input type="text" id="careNotes" class="w-full border rounded-md p-2" />
+              </div>
+            </div>
+            <button type="submit"
+              class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 w-full sm:w-auto">添加事件</button>
+          </form>
         </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">事件类型</label>
-          <select id="eventType" class="w-full border rounded-md p-2">
-            <option value="feeding">喂养</option>
-            <option value="diaper">换尿布</option>
-            <option value="nutrition">营养品</option>
-            <option value="care">洗护</option>
-          </select>
-        </div>
-      </div>
-      <!-- 喂养 -->
-      <div id="feedingFields" class="flex flex-col sm:flex-row gap-4">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">喂养方法</label>
-          <select id="feedMethod" class="w-full border rounded-md p-2">
-            <option>母乳</option>
-            <option>奶粉</option>
-            <option>辅食</option>
-            <option>正常餐食</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">数量 (ml)</label>
-          <input type="number" id="feedAmount" class="w-full border rounded-md p-2" />
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">时长 (分钟)</label>
-          <input type="number" id="feedDuration" class="w-full border rounded-md p-2" />
-        </div>
-      </div>
-      <!-- 换尿布 -->
-      <div id="diaperFields" class="flex flex-col sm:flex-row gap-4 hidden">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">尿布类型</label>
-          <select id="diaperType" class="w-full border rounded-md p-2">
-            <option>小便</option>
-            <option>大便</option>
-            <option>混合</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
-          <input type="text" id="diaperNotes" class="w-full border rounded-md p-2" />
-        </div>
-      </div>
-      <!-- 营养品 -->
-      <div id="nutritionFields" class="flex flex-col sm:flex-row gap-4 hidden">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">营养品类型</label>
-          <select id="nutritionType" class="w-full border rounded-md p-2">
-            <option>维生素AD</option>
-            <option>益生菌</option>
-            <option>铁剂</option>
-            <option>其他</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">备注/自定义</label>
-          <input type="text" id="nutritionNotes" class="w-full border rounded-md p-2" placeholder="如其他营养品名称" />
-        </div>
-      </div>
-      <!-- 洗护 -->
-      <div id="careFields" class="flex flex-col sm:flex-row gap-4 hidden">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">洗护类型</label>
-          <select id="careType" class="w-full border rounded-md p-2">
-            <option>洗澡</option>
-            <option>洗脸</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
-          <input type="text" id="careNotes" class="w-full border rounded-md p-2" />
-        </div>
-      </div>
-      <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 w-full sm:w-auto">添加事件</button>
-    </form>
-  </div>
-</section>
-
-      <!-- 每日指标 -->
-      <!-- 每日指标 -->
-<section class="mb-8">
-  <h2 class="text-xl font-semibold text-gray-700 mb-4">每日指标</h2>
-  <div class="bg-white p-6 rounded-lg shadow">
-    <form id="metricsForm" class="space-y-4">
-      <div class="flex flex-col sm:flex-row gap-4">
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">身高 (cm)</label>
-          <input type="number" id="heightInput" step="0.1" class="w-full border rounded-md p-2" />
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">体重 (kg)</label>
-          <input type="number" step="0.05" id="weightInput" class="w-full border rounded-md p-2" />
-        </div>
-        <div class="w-full">
-          <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
-          <input type="text" id="remarkInput" class="w-full border rounded-md p-2" placeholder="可记录疫苗等其他事项" />
-        </div>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-4">
-        <button type="button" id="fillYesterdayMetrics" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700 w-full sm:w-auto">
-          填充昨日指标
-        </button>
-        <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full sm:w-auto">
-          保存指标
-        </button>
-      </div>
-    </form>
-  </div>
-</section>
+      </section>
 
       <!-- 当日记录概览 -->
       <section class="mb-8">
@@ -161,8 +133,6 @@
                   <th class="py-2 px-4 border-b">详情</th>
                   <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
                   <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
                   <th class="py-2 px-4 border-b">备注</th>
                   <th class="py-2 px-4 border-b">操作</th>
                 </tr>
@@ -171,7 +141,48 @@
             </table>
           </div>
         </div>
-   
+
+      </section>
+
+      <!-- 每日指标 -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">每日指标</h2>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <form id="metricsForm" class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">身高 (cm)</label>
+                <input type="number" id="heightInput" step="0.1" class="w-full border rounded-md p-2" />
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">体重 (kg)</label>
+                <input type="number" step="0.05" id="weightInput" class="w-full border rounded-md p-2" />
+              </div>
+              <div class="w-full">
+                <label class="block text-sm font-medium text-gray-600 mb-1">备注</label>
+                <input type="text" id="remarkInput" class="w-full border rounded-md p-2" placeholder="可记录其他事项" />
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button type="button" id="fillYesterdayMetrics"
+                class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700 w-full sm:w-auto">
+                填充昨日指标
+              </button>
+              <button type="submit"
+                class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full sm:w-auto">
+                保存指标
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- 当日身高体重展示 -->
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">今日身高体重</h2>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <div id="todayMetrics"></div>
+        </div>
       </section>
     </div>
 
@@ -181,21 +192,13 @@
       <section class="mb-8">
         <h2 class="text-xl font-semibold text-gray-700 mb-4">汇总报告</h2>
         <div class="bg-white p-6 rounded-lg shadow space-y-4">
-          <!-- <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4">
-            <input type="date" id="reportStart" class="border rounded-md p-2 w-full" />
-            <input type="date" id="reportEnd"   class="border rounded-md p-2 w-full" />
-            <button id="generateReport" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">
-              生成报告
-            </button>
-            <button id="exportExcel" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">
-              导出Excel
-            </button>
-          </div> -->
           <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 mb-4">
             <input type="date" id="reportStart" class="border rounded-md p-2 w-full" />
             <input type="date" id="reportEnd" class="border rounded-md p-2 w-full" />
-            <button id="generateReport" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">生成报告</button>
-            <button id="exportExcel" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">导出Excel</button>
+            <button id="generateReport"
+              class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">生成报告</button>
+            <button id="exportExcel"
+              class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">导出Excel</button>
           </div>
           <div class="mt-6">
             <canvas id="weightChart" class="mb-6"></canvas>
@@ -205,35 +208,85 @@
       </section>
 
       <!-- 历史记录表格 -->
+      <!-- <section>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">历史记录</h2>
+          <button id="btn-refresh" class="text-indigo-600 hover:text-indigo-800">刷新</button>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 border-b">时间</th>
+                  <th class="py-2 px-4 border-b">类型</th>
+                  <th class="py-2 px-4 border-b">详情</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
+                  <th class="py-2 px-4 border-b">备注</th>
+                </tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section> -->
+      <!-- 历史事件表格 -->
       <section>
         <div class="flex items-center justify-between mb-4">
-  <h2 class="text-xl font-semibold text-gray-700">历史记录</h2>
-  <button id="btn-refresh" class="text-indigo-600 hover:text-indigo-800">刷新</button>
-</div>
-<div class="bg-white p-6 rounded-lg shadow">
-  <div class="overflow-x-auto">
-    <table class="w-full text-left">
-      <thead>
-        <tr>
-          <th class="py-2 px-4 border-b">时间</th>
-          <th class="py-2 px-4 border-b">类型</th>
-          <th class="py-2 px-4 border-b">详情</th>
-          <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
-          <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
-          <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
-          <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
-          <th class="py-2 px-4 border-b">备注</th>
-        </tr>
-      </thead>
-      <tbody id="historyTable"></tbody>
-    </table>
-  </div>
-</div>
+          <h2 class="text-xl font-semibold text-gray-700">历史事件</h2>
+          <button id="btn-refresh-events" class="text-indigo-600 hover:text-indigo-800">刷新</button>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 border-b">日期时间</th>
+                  <th class="py-2 px-4 border-b">类型</th>
+                  <th class="py-2 px-4 border-b">详情</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
+                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
+                  <th class="py-2 px-4 border-b">备注</th>
+                </tr>
+              </thead>
+              <tbody id="historyEventsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 历史指标表格 -->
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">历史身高体重</h2>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 border-b">日期</th>
+                  <th class="py-2 px-4 border-b">身高(cm)</th>
+                  <th class="py-2 px-4 border-b">体重(kg)</th>
+                  <th class="py-2 px-4 border-b">备注</th>
+                </tr>
+              </thead>
+              <tbody id="historyMetricsTable"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
     </div>
   </div>
+  <footer class="text-center text-gray-400 text-sm mt-8 mb-4">
+    版本号：v1.0.0 © 2025
+  </footer>
+</body>
 
-  <!-- 脚本 -->
+<!-- 脚本 -->
 <script>
   // 类型映射
   const typeMap = {
@@ -241,7 +294,7 @@
     diaper: '换尿布',
     nutrition: '营养品',
     care: '洗护'
-  }; 
+  };
   // 切换事件字段
   const eventType = document.getElementById('eventType');
   const feedingFields = document.getElementById('feedingFields');
@@ -278,110 +331,124 @@
       btnToday.classList.remove('border-indigo-600', 'text-indigo-600');
       contentHistory.classList.remove('hidden');
       contentToday.classList.add('hidden');
-      loadHistoryRecords();
+      loadHistoryEvents();
+      loadHistoryMetrics();
     }
   }
 
-// 加载当日记录（按顶部日期过滤，时间降序）
-async function loadTodayRecords() {
-  const date = document.getElementById('datePicker').value;
-  // 1. 拉取事件列表
-  const resE = await fetch(`/api/events?date=${date}`);
-  const events = await resE.json();
-  // 2. 拉取指标（身高/体重/备注）
-  const resM = await fetch(`/api/metrics?date=${date}`);
-  const metrics = await resM.json();
-  const met = metrics[0] || {};  // 通常只存一条
-
-  // 3. 按时间降序排序
-  events.sort((a, b) => b.time.localeCompare(a.time));
-
-  // 4. 渲染到表格
-  const tbody = document.getElementById('todayTable');
-  tbody.innerHTML = '';
-  events.forEach(ev => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="py-2 px-4 border-b">${ev.date} ${ev.time}</td>
-      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.details || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.nutrition || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.care || ''}</td>
-      <td class="py-2 px-4 border-b">${met.height || ''}</td>
-      <td class="py-2 px-4 border-b">${met.weight || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.remark || ''}</td>
-       <td class="py-2 px-4 border-b">
-        <button class="text-red-600 hover:underline delete-btn" data-id="${ev.id}">
-          删除
-        </button>
-      </td>
+  // 渲染当日事件
+  function renderTodayEvents(events) {
+    const tbody = document.getElementById('todayTable');
+    tbody.innerHTML = '';
+    events.forEach(ev => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+      <td>${ev.date} ${ev.time || ''}</td>
+      <td>${typeMap[ev.type] || ev.type}</td>
+      <td>${ev.details || ''}</td>
+      <td>${ev.nutrition || ''}</td>
+      <td>${ev.care || ''}</td>
+      <td>${ev.remark || ''}</td>
+      <td><a href="#" data-id="${ev.id}" class="delete-btn" style="color:red;">删除</a></td>
     `;
-    tbody.appendChild(tr);
-  });
-}
+      tbody.appendChild(tr);
+    });
+  }
 
- // 绑定所有删除按钮
- document.getElementById('todayTable').addEventListener('click', async e => {
-  if (e.target.classList.contains('delete-btn')) {
-    const id = e.target.dataset.id;
-    if (!confirm('确定要删除这条记录吗？')) return;
-    const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-    if (res.status === 204) {
-      loadTodayRecords();
+  // 渲染今日身高体重
+  function renderTodayMetrics(metrics) {
+    const div = document.getElementById('todayMetrics');
+    if (metrics && (metrics.height || metrics.weight || metrics.remark)) {
+      div.innerHTML = `
+      <div>身高: ${metrics.height || ''} cm</div>
+      <div>体重: ${metrics.weight || ''} kg</div>
+      <div>备注: ${metrics.remark || ''}</div>
+    `;
     } else {
-      alert('删除失败');
+      div.innerHTML = '<div class="text-gray-400">今日暂无身高体重数据</div>';
     }
   }
-});
 
-document.getElementById('exportExcel').addEventListener('click', () => {
-  const start = document.getElementById('reportStart').value;
-  const end = document.getElementById('reportEnd').value;
-  if (!start || !end) {
-    alert('请先选择开始和结束日期');
-    return;
+
+  async function loadTodayRecords() {
+    const date = document.getElementById('datePicker').value;
+
+    // 拉取事件
+    const eventsRes = await fetch(`/api/events?date=${date}`);
+    const events = await eventsRes.json();
+
+    // 拉取指标
+    const metricsRes = await fetch(`/api/metrics?date=${date}`);
+    const metrics = await metricsRes.json();
+
+    renderTodayEvents(events);
+    renderTodayMetrics(metrics);
   }
-  // 直接跳转下载
-  window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
-});
 
-// 在脚本末尾确保：
-// 1) 切换日期时自动刷新当日记录
-document.getElementById('datePicker')
-        .addEventListener('change', loadTodayRecords);
-// 2) 切换到“当日记录”标签时调用
-document.getElementById('btn-today')
-        .addEventListener('click', () => loadTodayRecords());
-// 3) 页面首次加载时初始化
-window.addEventListener('load', () => loadTodayRecords());
+  // 绑定所有删除按钮
+  document.getElementById('todayTable').addEventListener('click', async e => {
+    if (e.target.classList.contains('delete-btn')) {
+      const id = e.target.dataset.id;
+      if (!confirm('确定要删除这条记录吗？')) return;
+      const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+      if (res.status === 204) {
+        loadTodayRecords();
+      } else {
+        alert('删除失败');
+      }
+    }
+  });
 
-document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
-  const dateInput = document.getElementById('datePicker');
-  const today = new Date(dateInput.value);
-  today.setDate(today.getDate() - 1);
-  const ymd = today.toISOString().slice(0, 10);
+  document.getElementById('exportExcel').addEventListener('click', () => {
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      alert('请先选择开始和结束日期');
+      return;
+    }
+    // 直接跳转下载
+    window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+  });
 
-  const res = await fetch(`/api/metrics?date=${ymd}`);
-  const data = await res.json();
-  if (data && data[0]) {
-    document.getElementById('heightInput').value = data[0].height || '';
-    document.getElementById('weightInput').value = data[0].weight || '';
-  } else {
-    alert('未找到昨日身高体重数据');
-  }
-});
+  // 在脚本末尾确保：
+  // 1) 切换日期时自动刷新当日记录
+  document.getElementById('datePicker')
+    .addEventListener('change', loadTodayRecords);
+  // 2) 切换到“当日记录”标签时调用
+  document.getElementById('btn-today')
+    .addEventListener('click', () => loadTodayRecords());
+  // 3) 页面首次加载时初始化
+  window.addEventListener('load', () => loadTodayRecords());
 
-let weightChartInstance = null;
-let feedChartInstance   = null;
+  document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
+    const dateInput = document.getElementById('datePicker');
+    const today = new Date(dateInput.value);
+    today.setDate(today.getDate() - 1);
+    const ymd = today.toISOString().slice(0, 10);
 
-function renderCharts(labels, weights, feeds) {
-  // 销毁旧图表
-  if (weightChartInstance) weightChartInstance.destroy();
-  if (feedChartInstance)   feedChartInstance.destroy();
+    const res = await fetch(`/api/metrics?date=${ymd}`);
+    const data = await res.json();
+    if (data && (data.height || data.weight)) {
+      document.getElementById('heightInput').value = data.height || '';
+      document.getElementById('weightInput').value = data.weight || '';
+      document.getElementById('remarkInput').value = data.remark || '';
+    } else {
+      alert('未找到昨日身高体重数据');
+    }
+  });
 
-  // 体重折线
-  weightChartInstance = new Chart(
-    document.getElementById('weightChart').getContext('2d'), {
+  let weightChartInstance = null;
+  let feedChartInstance = null;
+
+  // 渲染图表
+  function renderCharts(labels, weights, feeds) {
+    // 销毁旧图表
+    if (weightChartInstance) weightChartInstance.destroy();
+    if (feedChartInstance) feedChartInstance.destroy();
+
+    // 体重折线
+    weightChartInstance = new Chart(
+      document.getElementById('weightChart').getContext('2d'), {
       type: 'line',
       data: {
         labels,
@@ -393,11 +460,11 @@ function renderCharts(labels, weights, feeds) {
         }]
       }
     }
-  );
+    );
 
-  // 喂养量折线
-  feedChartInstance = new Chart(
-    document.getElementById('feedChart').getContext('2d'), {
+    // 喂养量折线
+    feedChartInstance = new Chart(
+      document.getElementById('feedChart').getContext('2d'), {
       type: 'line',
       data: {
         labels,
@@ -409,69 +476,95 @@ function renderCharts(labels, weights, feeds) {
         }]
       }
     }
-  );
-}
-
-document.getElementById('generateReport')
-  .addEventListener('click', async () => {
-    const start = document.getElementById('reportStart').value;
-    const end   = document.getElementById('reportEnd').value;
-    if (!start || !end) {
-      return alert('请先选择开始和结束日期');
-    }
-    // 1. 拉报告数据
-    const res = await fetch(`/api/report?start=${start}&end=${end}`);
-    if (!res.ok) {
-      return alert('获取报告数据失败');
-    }
-    const { labels, weights, feeds } = await res.json();
-
-    // 2. 渲染图表
-    renderCharts(labels, weights, feeds);
-
-    // 3. 同步刷新历史表格
-    loadHistoryRecords();
-  });
-
-
-// 渲染历史记录表格（同步隐藏列）
-async function loadHistoryRecords() {
-  const start = document.getElementById('reportStart').value;
-  const end   = document.getElementById('reportEnd').value;
-  if (!start || !end) {
-    document.getElementById('historyTable').innerHTML = '';
-    return;
+    );
   }
 
-  const res = await fetch(`/api/history?start=${start}&end=${end}`);
-  const rows = await res.json();
 
-  // 按 date + time 降序
-  rows.sort((a, b) => {
-    const dtA = `${a.date} ${a.time||'00:00'}`;
-    const dtB = `${b.date} ${b.time||'00:00'}`;
-    return dtB.localeCompare(dtA);
-  });
 
-  const tbody = document.getElementById('historyTable');
-  tbody.innerHTML = '';
-  rows.forEach(r => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="py-2 px-4 border-b">${r.date} ${r.time||''}</td>
+  document.getElementById('generateReport')
+    .addEventListener('click', async () => {
+      const start = document.getElementById('reportStart').value;
+      const end = document.getElementById('reportEnd').value;
+      if (!start || !end) {
+        return alert('请先选择开始和结束日期');
+      }
+      // 1. 拉报告数据
+      const res = await fetch(`/api/report?start=${start}&end=${end}`);
+      if (!res.ok) {
+        return alert('获取报告数据失败');
+      }
+      const { labels, weights, feeds } = await res.json();
+
+      // 2. 渲染图表
+      renderCharts(labels, weights, feeds);
+      loadHistoryEvents();
+      loadHistoryMetrics();
+
+    });
+
+  async function loadHistoryEvents() {
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      document.getElementById('historyEventsTable').innerHTML = '';
+      return;
+    }
+    const res = await fetch(`/api/history/events?start=${start}&end=${end}`);
+    const rows = await res.json();
+    const tbody = document.getElementById('historyEventsTable');
+    tbody.innerHTML = '';
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+      <td class="py-2 px-4 border-b">${r.date} ${r.time || ''}</td>
       <td class="py-2 px-4 border-b">${typeMap[r.type] || ''}</td>
       <td class="py-2 px-4 border-b">${r.details || ''}</td>
       <td class="py-2 px-4 border-b hidden sm:table-cell">${r.nutrition || ''}</td>
       <td class="py-2 px-4 border-b hidden sm:table-cell">${r.care || ''}</td>
-      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.height || ''}</td>
-      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.weight || ''}</td>
       <td class="py-2 px-4 border-b">${r.remark || ''}</td>
     `;
-    tbody.appendChild(tr);
-  });
-}
+      tbody.appendChild(tr);
+    });
+  }
 
-// 表单提交
+  async function loadHistoryMetrics() {
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      document.getElementById('historyMetricsTable').innerHTML = '';
+      return;
+    }
+    const res = await fetch(`/api/history/metrics?start=${start}&end=${end}`);
+    const rows = await res.json();
+    const tbody = document.getElementById('historyMetricsTable');
+    tbody.innerHTML = '';
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+      <td class="py-2 px-4 border-b">${r.date}</td>
+      <td class="py-2 px-4 border-b">${r.height || ''}</td>
+      <td class="py-2 px-4 border-b">${r.weight || ''}</td>
+      <td class="py-2 px-4 border-b">${r.remark || ''}</td>
+    `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // 绑定刷新按钮
+  document.getElementById('btn-refresh-events').addEventListener('click', () => {
+    loadHistoryEvents();
+    loadHistoryMetrics();
+  });
+
+  // 生成报告后同步刷新
+  document.getElementById('generateReport')
+    .addEventListener('click', async () => {
+      // ...原有代码...
+      loadHistoryEvents();
+      loadHistoryMetrics();
+    });
+
+  // 表单提交
   document.getElementById('eventForm').addEventListener('submit', async e => {
     e.preventDefault();
     const date = document.getElementById('datePicker').value;
@@ -507,97 +600,56 @@ async function loadHistoryRecords() {
     e.target.reset();
   });
 
+
+  // 提交每日指标
   document.getElementById('metricsForm').addEventListener('submit', async e => {
     e.preventDefault();
+
     const date = document.getElementById('datePicker').value;
-    const payload = {
-      date,
-      height: parseFloat(document.getElementById('heightInput').value),
-      weight: parseFloat(document.getElementById('weightInput').value),
-      remark: document.getElementById('remarkInput').value
-    };
+    const heightVal = document.getElementById('heightInput').value;
+    const weightVal = document.getElementById('weightInput').value;
+    const remarkVal = document.getElementById('remarkInput').value;
+
+    // 如果三项都没填，直接返回
+    if (!heightVal && !weightVal && !remarkVal) {
+      alert('请至少填写一项');
+      return;
+    }
+
+    const payload = { date };
+    if (heightVal !== '') payload.height = parseFloat(heightVal);
+    if (weightVal !== '') payload.weight = parseFloat(weightVal);
+    if (remarkVal !== '') payload.remark = remarkVal;
+
     await fetch('/api/metrics', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+
     loadTodayRecords();
     e.target.reset();
   });
 
-  const tbody = document.getElementById('todayTable');
-tbody.innerHTML = '';
-
-// 判断是否小屏
-const isMobile = window.innerWidth < 640;
-
-if (isMobile) {
-  // 卡片式渲染
-  events.forEach(ev => {
-    const metInfo = `
-      <div class="flex flex-wrap gap-2 text-sm text-gray-500 mt-2">
-        ${met.height ? `<span>身高: ${met.height}cm</span>` : ''}
-        ${met.weight ? `<span>体重: ${met.weight}kg</span>` : ''}
-      </div>
-    `;
-    const card = document.createElement('tr');
-    card.className = "block mb-4";
-    card.innerHTML = `
-      <td class="block bg-white rounded-lg shadow p-4 mb-2">
-        <div class="flex justify-between items-center mb-2">
-          <span class="font-semibold text-indigo-700">${ev.date} ${ev.time}</span>
-          <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">${typeMap[ev.type] || ''}</span>
-        </div>
-        <div class="mb-1"><span class="font-medium">详情：</span>${ev.details || ''}</div>
-        ${ev.nutrition ? `<div class="mb-1"><span class="font-medium">营养品：</span>${ev.nutrition}</div>` : ''}
-        ${ev.care ? `<div class="mb-1"><span class="font-medium">洗护：</span>${ev.care}</div>` : ''}
-        ${metInfo}
-        <div class="mb-1"><span class="font-medium">备注：</span>${ev.remark || ''}</div>
-        <div class="mt-2 text-right">
-          <button class="text-red-600 hover:underline delete-btn" data-id="${ev.id}">删除</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(card);
-  });
-} else {
-  // 表格渲染（原有方式）
-  events.forEach(ev => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="py-2 px-4 border-b">${ev.date} ${ev.time}</td>
-      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.details || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.nutrition || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.care || ''}</td>
-      <td class="py-2 px-4 border-b">${met.height || ''}</td>
-      <td class="py-2 px-4 border-b">${met.weight || ''}</td>
-      <td class="py-2 px-4 border-b">${ev.remark || ''}</td>
-      <td class="py-2 px-4 border-b">
-        <button class="text-red-600 hover:underline delete-btn" data-id="${ev.id}">
-          删除
-        </button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
   // 页面首次加载
   document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
-  document.getElementById('btn-refresh').addEventListener('click', loadHistoryRecords);
+  document.getElementById('btn-refresh').addEventListener('click', () => {
+    loadHistoryEvents();
+    loadHistoryMetrics();
+  });
 
   // web load event
   window.addEventListener('load', () => {
-  // 取北京时间（UTC+8）
-  const now = new Date();
-  // 计算北京时间
-  const bjOffset = 8 * 60; // 北京是UTC+8
-  const localOffset = now.getTimezoneOffset(); // 本地与UTC的分钟差
-  const bjTime = new Date(now.getTime() + (bjOffset + localOffset) * 60000);
-  // 格式化为 yyyy-mm-dd
-  const ymd = bjTime.toISOString().slice(0, 10);
-  document.getElementById('datePicker').value = ymd;
+    // 取北京时间（UTC+8）
+    const now = new Date();
+    // 计算北京时间
+    const bjOffset = 8 * 60; // 北京是UTC+8
+    const localOffset = now.getTimezoneOffset(); // 本地与UTC的分钟差
+    const bjTime = new Date(now.getTime() + (bjOffset + localOffset) * 60000);
+    // 格式化为 yyyy-mm-dd
+    const ymd = bjTime.toISOString().slice(0, 10);
+    document.getElementById('datePicker').value = ymd;
 
-  activateTab(true);
-});
+    activateTab(true);
+  });
 </script>

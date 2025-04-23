@@ -28,6 +28,8 @@ db.prepare(`
     remark TEXT
   )
 `).run();
+db.prepare(`
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_metrics_date ON metrics(date)`).run();
 
 const app = express();
 app.use(express.json());        // 添加这一行，才能处理 JSON POST
@@ -61,8 +63,8 @@ app.get('/export', async (req, res) => {
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet('报告');
   ws.addRow([
-    '日期','时间','事件类型','详情','营养品','洗护',
-    '身高(cm)','体重(kg)','备注(事件)','备注(指标)'
+    '日期', '时间', '事件类型', '详情', '营养品', '洗护',
+    '身高(cm)', '体重(kg)', '备注(事件)', '备注(指标)'
   ]);
 
   // 合并输出
@@ -126,46 +128,86 @@ app.get('/api/events', (req, res) => {
     SELECT id, date, time, type, details, nutrition, care, remark
     FROM events
     WHERE date = ?
-    ORDER BY time
+    ORDER BY
+      CASE type
+        WHEN 'feeding' THEN 1
+        WHEN 'diaper' THEN 2
+        WHEN 'nutrition' THEN 3
+        WHEN 'care' THEN 4
+        ELSE 5
+      END ASC,
+      time DESC
   `).all(date);
   res.json(rows);
 });
 
+// 获取历史事件
+app.get('/api/history/events', (req, res) => {
+  const { start, end } = req.query;
+  const rows = db.prepare(`
+    SELECT id, date, time, type, details, nutrition, care, remark
+    FROM events
+    WHERE date BETWEEN ? AND ?
+    ORDER BY date DESC, 
+      CASE type
+        WHEN 'feeding' THEN 1
+        WHEN 'diaper' THEN 2
+        WHEN 'nutrition' THEN 3
+        WHEN 'care' THEN 4
+        ELSE 5
+      END ASC,
+      time DESC
+  `).all(start, end);
+  res.json(rows);
+});
+
+// 获取历史指标
+app.get('/api/history/metrics', (req, res) => {
+  const { start, end } = req.query;
+  const rows = db.prepare(`
+    SELECT date, height, weight, remark
+    FROM metrics
+    WHERE date BETWEEN ? AND ?
+    ORDER BY date DESC
+  `).all(start, end);
+  res.json(rows);
+});
 
 // 获取某日指标
 app.get('/api/metrics', (req, res) => {
   const { date } = req.query;
-  const rows = db.prepare(`
+  const row = db.prepare(`
     SELECT date, height, weight, remark
     FROM metrics
     WHERE date = ?
-  `).all(date);
-  res.json(rows);
+  `).get(date);
+  res.json(row || {});
 });
 
-// 新增指标
+// 新增或更新指标
 app.post('/api/metrics', (req, res) => {
   const { date, height, weight, remark } = req.body;
-  db.prepare(`
-    INSERT INTO metrics (date, height, weight, remark)
-    VALUES (?, ?, ?, ?)
-  `).run(date, height, weight, remark);
+  const old = db.prepare('SELECT * FROM metrics WHERE date = ?').get(date);
+
+  if (old) {
+    // 只更新有传值的字段
+    const newHeight = (height !== undefined && height !== null && height !== '') ? height : old.height;
+    const newWeight = (weight !== undefined && weight !== null && weight !== '') ? weight : old.weight;
+    const newRemark = (remark !== undefined && remark !== null && remark !== '') ? remark : old.remark;
+
+    db.prepare(`
+      UPDATE metrics SET height = ?, weight = ?, remark = ?
+      WHERE date = ?
+    `).run(newHeight, newWeight, newRemark, date);
+  } else {
+    db.prepare(`
+      INSERT INTO metrics (date, height, weight, remark)
+      VALUES (?, ?, ?, ?)
+    `).run(date, height || null, weight || null, remark || '');
+  }
   res.sendStatus(201);
 });
 
-// 获取历史（事件+指标）
-app.get('/api/history', (req, res) => {
-  const { start, end } = req.query;
-  const rows = db.prepare(`
-    SELECT e.date, e.time, e.type, e.details, e.nutrition, e.care,
-           m.height, m.weight, e.remark
-    FROM events e
-    LEFT JOIN metrics m ON e.date = m.date
-    WHERE e.date BETWEEN ? AND ?
-    ORDER BY e.date, e.time
-  `).all(start, end);
-  res.json(rows);
-});
 
 // 生成报告数据
 app.get('/api/report', (req, res) => {
@@ -207,7 +249,6 @@ app.get('/api/report', (req, res) => {
   res.json({ labels, weights, feeds });
 });
 
-// 删除指定项
 // 删除指定项（同时删除该日期的指标）
 app.delete('/api/events/:id', (req, res) => {
   const id = req.params.id;
