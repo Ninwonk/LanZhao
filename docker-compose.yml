@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  lanzhao-record:
+    build: .
+    container_name: lanzhao-record
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: always
