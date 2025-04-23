@@ -208,9 +208,23 @@ app.get('/api/report', (req, res) => {
 });
 
 // 删除指定项
+// 删除指定项（同时删除该日期的指标）
 app.delete('/api/events/:id', (req, res) => {
   const id = req.params.id;
+  // 先查出该事件的日期
+  const ev = db.prepare('SELECT date FROM events WHERE id = ?').get(id);
+  if (!ev) return res.sendStatus(404);
+
+  // 删除事件
   const info = db.prepare('DELETE FROM events WHERE id = ?').run(id);
+
+  // 检查该日期是否还有其他事件
+  const count = db.prepare('SELECT COUNT(*) AS n FROM events WHERE date = ?').get(ev.date).n;
+  if (count === 0) {
+    // 如果该日期没有其他事件了，删除对应的指标
+    db.prepare('DELETE FROM metrics WHERE date = ?').run(ev.date);
+  }
+
   if (info.changes > 0) {
     res.sendStatus(204);
   } else {
