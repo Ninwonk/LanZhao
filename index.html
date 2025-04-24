@@ -131,8 +131,6 @@
                   <th class="py-2 px-4 border-b">时间</th>
                   <th class="py-2 px-4 border-b">类型</th>
                   <th class="py-2 px-4 border-b">详情</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
                   <th class="py-2 px-4 border-b">备注</th>
                   <th class="py-2 px-4 border-b">操作</th>
                 </tr>
@@ -257,7 +255,7 @@
     </div>
   </div>
   <footer class="text-center text-gray-400 text-sm mt-8 mb-4">
-    版本号：v1.0.0.2 © 2025
+    版本号：v1.0.0.3 © 2025
   </footer>
 </body>
 
@@ -316,15 +314,24 @@
     const tbody = document.getElementById('todayTable');
     tbody.innerHTML = '';
     events.forEach(ev => {
+      let detail = ev.details || '';
+      if (ev.type === 'nutrition') {
+        detail = `${ev.nutrition || ''}${ev.remark ? '，' + ev.remark : ''}`;
+      } else if (ev.type === 'care') {
+        detail = `${ev.care || ''}${ev.remark ? '，' + ev.remark : ''}`;
+      } else if (ev.type === 'diaper') {
+        detail = ev.care || ''; // 显示尿布类型
+      }
+      const remark = (ev.type === 'nutrition' || ev.type === 'care') ? '' : (ev.remark || '');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-      <td>${ev.date} ${ev.time || ''}</td>
-      <td>${typeMap[ev.type] || ev.type}</td>
-      <td>${ev.details || ''}</td>
-      <td>${ev.nutrition || ''}</td>
-      <td>${ev.care || ''}</td>
-      <td>${ev.remark || ''}</td>
-      <td><a href="#" data-id="${ev.id}" class="delete-btn" style="color:red;">删除</a></td>
+      <td class="py-2 px-4 border-b">${ev.date} ${ev.time || ''}</td>
+      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ev.type}</td>
+      <td class="py-2 px-4 border-b">${detail}</td>
+      <td class="py-2 px-4 border-b">${remark}</td>
+      <td class="py-2 px-4 border-b">
+        <a href="#" data-id="${ev.id}" class="delete-btn" style="color:red;">删除</a>
+      </td>
     `;
       tbody.appendChild(tr);
     });
@@ -540,6 +547,11 @@
       const date = document.getElementById('datePicker').value;
       const time = document.getElementById('eventTime').value;
       const type = eventType.value;
+      if (!time) {
+        alert('请填写事件时间');
+        return;
+      }
+
       const payload = { date, time, type };
       if (type === 'feeding') {
         payload.details = document.getElementById('feedMethod').value;
@@ -568,6 +580,7 @@
       });
       loadTodayRecords();
       e.target.reset();
+      eventType.dispatchEvent(new Event('change'));
     });
 
     // 提交每日指标
