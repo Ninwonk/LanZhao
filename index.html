@@ -125,7 +125,7 @@
         <h2 class="text-xl font-semibold text-gray-700 mb-4">当日记录概览</h2>
         <div class="bg-white p-6 rounded-lg shadow">
           <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full min-w-max text-left">
               <thead>
                 <tr>
                   <th class="py-2 px-4 border-b">时间</th>
@@ -207,32 +207,7 @@
         </div>
       </section>
 
-      <!-- 历史记录表格 -->
-      <!-- <section>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold text-gray-700">历史记录</h2>
-          <button id="btn-refresh" class="text-indigo-600 hover:text-indigo-800">刷新</button>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead>
-                <tr>
-                  <th class="py-2 px-4 border-b">时间</th>
-                  <th class="py-2 px-4 border-b">类型</th>
-                  <th class="py-2 px-4 border-b">详情</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">身高(cm)</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">体重(kg)</th>
-                  <th class="py-2 px-4 border-b">备注</th>
-                </tr>
-              </thead>
-              <tbody id="historyTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section> -->
+
       <!-- 历史事件表格 -->
       <section>
         <div class="flex items-center justify-between mb-4">
@@ -241,7 +216,7 @@
         </div>
         <div class="bg-white p-6 rounded-lg shadow">
           <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full min-w-max text-left">
               <thead>
                 <tr>
                   <th class="py-2 px-4 border-b">日期时间</th>
@@ -282,7 +257,7 @@
     </div>
   </div>
   <footer class="text-center text-gray-400 text-sm mt-8 mb-4">
-    版本号：v1.0.0.1 © 2025
+    版本号：v1.0.0.2 © 2025
   </footer>
 </body>
 
@@ -476,152 +451,152 @@
   }
 
 
-// ...existing code...
-document.addEventListener('DOMContentLoaded', () => {
-  // 设置日期选择器为今天
-  const dateInput = document.getElementById('datePicker');
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const ymd = `${year}-${month}-${day}`;
-  dateInput.value = ymd;
-
-  // 事件绑定
-  document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
-  document.getElementById('btn-today').addEventListener('click', () => loadTodayRecords());
-  document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
+  // ...existing code...
+  document.addEventListener('DOMContentLoaded', () => {
+    // 设置日期选择器为今天
     const dateInput = document.getElementById('datePicker');
-    const today = new Date(dateInput.value);
-    today.setDate(today.getDate() - 1);
-    const ymd = today.toISOString().slice(0, 10);
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const ymd = `${year}-${month}-${day}`;
+    dateInput.value = ymd;
 
-    const res = await fetch(`/api/metrics?date=${ymd}`);
-    const data = await res.json();
-    if (data && (data.height || data.weight)) {
-      document.getElementById('heightInput').value = data.height || '';
-      document.getElementById('weightInput').value = data.weight || '';
-      document.getElementById('remarkInput').value = data.remark || '';
-    } else {
-      alert('未找到昨日身高体重数据');
-    }
-  });
-  document.getElementById('todayTable').addEventListener('click', async e => {
-    if (e.target.classList.contains('delete-btn')) {
-      const id = e.target.dataset.id;
-      if (!confirm('确定要删除这条记录吗？')) return;
-      const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-      if (res.status === 204) {
-        loadTodayRecords();
+    // 事件绑定
+    document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
+    document.getElementById('btn-today').addEventListener('click', () => loadTodayRecords());
+    document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
+      const dateInput = document.getElementById('datePicker');
+      const today = new Date(dateInput.value);
+      today.setDate(today.getDate() - 1);
+      const ymd = today.toISOString().slice(0, 10);
+
+      const res = await fetch(`/api/metrics?date=${ymd}`);
+      const data = await res.json();
+      if (data && (data.height || data.weight)) {
+        document.getElementById('heightInput').value = data.height || '';
+        document.getElementById('weightInput').value = data.weight || '';
+        document.getElementById('remarkInput').value = data.remark || '';
       } else {
-        alert('删除失败');
+        alert('未找到昨日身高体重数据');
       }
-    }
-  });
-  document.getElementById('exportExcel').addEventListener('click', () => {
-    const start = document.getElementById('reportStart').value;
-    const end = document.getElementById('reportEnd').value;
-    if (!start || !end) {
-      alert('请先选择开始和结束日期');
-      return;
-    }
-    window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
-  });
+    });
+    document.getElementById('todayTable').addEventListener('click', async e => {
+      if (e.target.classList.contains('delete-btn')) {
+        const id = e.target.dataset.id;
+        if (!confirm('确定要删除这条记录吗？')) return;
+        const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+        if (res.status === 204) {
+          loadTodayRecords();
+        } else {
+          alert('删除失败');
+        }
+      }
+    });
+    document.getElementById('exportExcel').addEventListener('click', () => {
+      const start = document.getElementById('reportStart').value;
+      const end = document.getElementById('reportEnd').value;
+      if (!start || !end) {
+        alert('请先选择开始和结束日期');
+        return;
+      }
+      window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+    });
 
-  // 绑定生成报告按钮
-  document.getElementById('generateReport').addEventListener('click', async () => {
-    const start = document.getElementById('reportStart').value;
-    const end = document.getElementById('reportEnd').value;
-    if (!start || !end) {
-      return alert('请先选择开始和结束日期');
-    }
-    const res = await fetch(`/api/report?start=${start}&end=${end}`);
-    if (!res.ok) {
-      return alert('获取报告数据失败');
-    }
-    const { labels, weights, feeds } = await res.json();
-    renderCharts(labels, weights, feeds);
-    loadHistoryEvents();
-    loadHistoryMetrics();
-  });
-  
-  // 绑定刷新按钮
-  document.getElementById('btn-refresh-events').addEventListener('click', () => {
-    loadHistoryEvents();
-    loadHistoryMetrics();
-  });
-
-  const btnRefresh = document.getElementById('btn-refresh');
-  if (btnRefresh) {
-    btnRefresh.addEventListener('click', () => {
+    // 绑定生成报告按钮
+    document.getElementById('generateReport').addEventListener('click', async () => {
+      const start = document.getElementById('reportStart').value;
+      const end = document.getElementById('reportEnd').value;
+      if (!start || !end) {
+        return alert('请先选择开始和结束日期');
+      }
+      const res = await fetch(`/api/report?start=${start}&end=${end}`);
+      if (!res.ok) {
+        return alert('获取报告数据失败');
+      }
+      const { labels, weights, feeds } = await res.json();
+      renderCharts(labels, weights, feeds);
       loadHistoryEvents();
       loadHistoryMetrics();
     });
-  }
 
-  // 提交事件表单
-  document.getElementById('eventForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const date = document.getElementById('datePicker').value;
-    const time = document.getElementById('eventTime').value;
-    const type = eventType.value;
-    const payload = { date, time, type };
-    if (type === 'feeding') {
-      payload.details = document.getElementById('feedMethod').value;
-      payload.nutrition = '';
-      payload.care = '';
-      payload.remark = `${document.getElementById('feedAmount').value}ml, ${document.getElementById('feedDuration').value}min`;
-    } else if (type === 'diaper') {
-      payload.details = '';
-      payload.nutrition = '';
-      payload.care = document.getElementById('diaperType').value;
-      payload.remark = document.getElementById('diaperNotes').value;
-    } else if (type === 'nutrition') {
-      payload.details = '';
-      payload.nutrition = document.getElementById('nutritionType').value;
-      payload.care = '';
-      payload.remark = document.getElementById('nutritionNotes').value;
-    } else if (type === 'care') {
-      payload.details = '';
-      payload.nutrition = '';
-      payload.care = document.getElementById('careType').value;
-      payload.remark = document.getElementById('careNotes').value;
-    }
-    await fetch('/api/events', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    // 绑定刷新按钮
+    document.getElementById('btn-refresh-events').addEventListener('click', () => {
+      loadHistoryEvents();
+      loadHistoryMetrics();
     });
-    loadTodayRecords();
-    e.target.reset();
-  });
 
-  // 提交每日指标
-  document.getElementById('metricsForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const date = document.getElementById('datePicker').value;
-    const heightVal = document.getElementById('heightInput').value;
-    const weightVal = document.getElementById('weightInput').value;
-    const remarkVal = document.getElementById('remarkInput').value;
-    if (!heightVal && !weightVal && !remarkVal) {
-      alert('请至少填写一项');
-      return;
+    const btnRefresh = document.getElementById('btn-refresh');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', () => {
+        loadHistoryEvents();
+        loadHistoryMetrics();
+      });
     }
-    const payload = { date };
-    if (heightVal !== '') payload.height = parseFloat(heightVal);
-    if (weightVal !== '') payload.weight = parseFloat(weightVal);
-    if (remarkVal !== '') payload.remark = remarkVal;
-    await fetch('/api/metrics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    loadTodayRecords();
-    e.target.reset();
-  });
 
-  // 初始化
-  activateTab(true);
-  loadTodayRecords();
-});
+    // 提交事件表单
+    document.getElementById('eventForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const date = document.getElementById('datePicker').value;
+      const time = document.getElementById('eventTime').value;
+      const type = eventType.value;
+      const payload = { date, time, type };
+      if (type === 'feeding') {
+        payload.details = document.getElementById('feedMethod').value;
+        payload.nutrition = '';
+        payload.care = '';
+        payload.remark = `${document.getElementById('feedAmount').value}ml, ${document.getElementById('feedDuration').value}min`;
+      } else if (type === 'diaper') {
+        payload.details = '';
+        payload.nutrition = '';
+        payload.care = document.getElementById('diaperType').value;
+        payload.remark = document.getElementById('diaperNotes').value;
+      } else if (type === 'nutrition') {
+        payload.details = '';
+        payload.nutrition = document.getElementById('nutritionType').value;
+        payload.care = '';
+        payload.remark = document.getElementById('nutritionNotes').value;
+      } else if (type === 'care') {
+        payload.details = '';
+        payload.nutrition = '';
+        payload.care = document.getElementById('careType').value;
+        payload.remark = document.getElementById('careNotes').value;
+      }
+      await fetch('/api/events', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      loadTodayRecords();
+      e.target.reset();
+    });
+
+    // 提交每日指标
+    document.getElementById('metricsForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const date = document.getElementById('datePicker').value;
+      const heightVal = document.getElementById('heightInput').value;
+      const weightVal = document.getElementById('weightInput').value;
+      const remarkVal = document.getElementById('remarkInput').value;
+      if (!heightVal && !weightVal && !remarkVal) {
+        alert('请至少填写一项');
+        return;
+      }
+      const payload = { date };
+      if (heightVal !== '') payload.height = parseFloat(heightVal);
+      if (weightVal !== '') payload.weight = parseFloat(weightVal);
+      if (remarkVal !== '') payload.remark = remarkVal;
+      await fetch('/api/metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      loadTodayRecords();
+      e.target.reset();
+    });
+
+    // 初始化
+    activateTab(true);
+    loadTodayRecords();
+  });
 
 </script>
