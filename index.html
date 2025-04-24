@@ -189,26 +189,36 @@
     <div id="content-history" class="hidden">
       <!-- 汇总报告 -->
       <section class="mb-8">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">汇总报告</h2>
-        <div class="bg-white p-6 rounded-lg shadow space-y-4">
-          <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 mb-4">
-            <input type="date" id="reportStart" class="border rounded-md p-2 w-full" />
-            <input type="date" id="reportEnd" class="border rounded-md p-2 w-full" />
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold text-gray-700">成长曲线统计</h2>
+          <div class="flex gap-2">
             <button id="generateReport"
-              class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 w-full">生成报告</button>
+              class="border border-indigo-500 text-indigo-600 hover:bg-indigo-50 px-4 py-1 rounded transition">生成报告</button>
             <button id="exportExcel"
-              class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 w-full">导出Excel</button>
+              class="border border-green-500 text-green-600 hover:bg-green-50 px-4 py-1 rounded transition">导出Excel</button>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow space-y-4">
+          <div class="flex flex-col sm:flex-row gap-4 items-center">
+            <div class="flex items-center w-full sm:w-auto">
+              <label for="reportStart" class="text-sm font-medium text-gray-600 mr-2 whitespace-nowrap">开始日期</label>
+              <input type="date" id="reportStart" class="border rounded-md p-2 w-full sm:w-44" />
+            </div>
+            <div class="flex items-center w-full sm:w-auto">
+              <label for="reportEnd" class="text-sm font-medium text-gray-600 mr-2 whitespace-nowrap">结束日期</label>
+              <input type="date" id="reportEnd" class="border rounded-md p-2 w-full sm:w-44" />
+            </div>
           </div>
           <div class="mt-6">
             <canvas id="weightChart" class="mb-6"></canvas>
-            <canvas id="feedChart"></canvas>
+            <canvas id="heightChart"></canvas>
           </div>
         </div>
       </section>
 
 
       <!-- 历史事件表格 -->
-      <section>
+      <section class="mb-8">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-700">历史事件</h2>
           <button id="btn-refresh-events" class="text-indigo-600 hover:text-indigo-800">刷新</button>
@@ -218,12 +228,11 @@
             <table class="w-full min-w-max text-left">
               <thead>
                 <tr>
-                  <th class="py-2 px-4 border-b">日期时间</th>
+                  <th class="py-2 px-4 border-b">时间</th>
                   <th class="py-2 px-4 border-b">类型</th>
                   <th class="py-2 px-4 border-b">详情</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">营养品</th>
-                  <th class="py-2 px-4 border-b hidden sm:table-cell">洗护</th>
                   <th class="py-2 px-4 border-b">备注</th>
+                  <th class="py-2 px-4 border-b">操作</th>
                 </tr>
               </thead>
               <tbody id="historyEventsTable"></tbody>
@@ -233,7 +242,7 @@
       </section>
 
       <!-- 历史指标表格 -->
-      <section>
+      <section class="mb-8">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-700">历史身高体重</h2>
         </div>
@@ -256,7 +265,7 @@
     </div>
   </div>
   <footer class="text-center text-gray-400 text-sm mt-8 mb-4">
-    版本号：v1.0.0.4 © 2025
+    版本号：v1.0.0.5 © 2025
   </footer>
 </body>
 
@@ -382,15 +391,14 @@
   }
 
   let weightChartInstance = null;
-  let feedChartInstance = null;
+  let heightChartInstance = null;
 
-  // 渲染图表
-  function renderCharts(labels, weights, feeds) {
-    // 销毁旧图表
+  // 渲染成长曲线
+  function renderCharts(labels, heights, weights) {
     if (weightChartInstance) weightChartInstance.destroy();
-    if (feedChartInstance) feedChartInstance.destroy();
+    if (heightChartInstance) heightChartInstance.destroy();
 
-    // 体重折线
+    // 体重曲线
     weightChartInstance = new Chart(
       document.getElementById('weightChart').getContext('2d'), {
       type: 'line',
@@ -399,6 +407,8 @@
         datasets: [{
           label: '体重 (kg)',
           data: weights,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.1)',
           fill: false,
           tension: 0.1
         }]
@@ -406,15 +416,17 @@
     }
     );
 
-    // 喂养量折线
-    feedChartInstance = new Chart(
-      document.getElementById('feedChart').getContext('2d'), {
+    // 身高曲线
+    heightChartInstance = new Chart(
+      document.getElementById('heightChart').getContext('2d'), {
       type: 'line',
       data: {
         labels,
         datasets: [{
-          label: '喂养量 (ml)',
-          data: feeds,
+          label: '身高 (cm)',
+          data: heights,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.1)',
           fill: false,
           tension: 0.1
         }]
@@ -422,31 +434,42 @@
     }
     );
   }
-
+  
+  // 加载历史事件
   async function loadHistoryEvents() {
-    const start = document.getElementById('reportStart').value;
-    const end = document.getElementById('reportEnd').value;
-    if (!start || !end) {
-      document.getElementById('historyEventsTable').innerHTML = '';
-      return;
-    }
-    const res = await fetch(`/api/history/events?start=${start}&end=${end}`);
-    const rows = await res.json();
-    const tbody = document.getElementById('historyEventsTable');
-    tbody.innerHTML = '';
-    rows.forEach(r => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-      <td class="py-2 px-4 border-b">${r.date} ${r.time || ''}</td>
-      <td class="py-2 px-4 border-b">${typeMap[r.type] || ''}</td>
-      <td class="py-2 px-4 border-b">${r.details || ''}</td>
-      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.nutrition || ''}</td>
-      <td class="py-2 px-4 border-b hidden sm:table-cell">${r.care || ''}</td>
-      <td class="py-2 px-4 border-b">${r.remark || ''}</td>
-    `;
-      tbody.appendChild(tr);
-    });
+  const start = document.getElementById('reportStart').value;
+  const end = document.getElementById('reportEnd').value;
+  if (!start || !end) {
+    document.getElementById('historyEventsTable').innerHTML = '';
+    return;
   }
+  const res = await fetch(`/api/history/events?start=${start}&end=${end}`);
+  const rows = await res.json();
+  const tbody = document.getElementById('historyEventsTable');
+  tbody.innerHTML = '';
+  rows.forEach(ev => {
+    let detail = ev.details || '';
+    if (ev.type === 'nutrition') {
+      detail = `${ev.nutrition || ''}${ev.remark ? '，' + ev.remark : ''}`;
+    } else if (ev.type === 'care') {
+      detail = `${ev.care || ''}${ev.remark ? '，' + ev.remark : ''}`;
+    } else if (ev.type === 'diaper') {
+      detail = ev.care || '';
+    }
+    const remark = (ev.type === 'nutrition' || ev.type === 'care') ? '' : (ev.remark || '');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="py-2 px-4 border-b">${ev.date} ${ev.time || ''}</td>
+      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ev.type}</td>
+      <td class="py-2 px-4 border-b">${detail}</td>
+      <td class="py-2 px-4 border-b">${remark}</td>
+      <td class="py-2 px-4 border-b">
+        <a href="#" data-id="${ev.id}" class="delete-btn" style="color:red;">删除</a>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
   async function loadHistoryMetrics() {
     const start = document.getElementById('reportStart').value;
@@ -525,7 +548,8 @@
       }
       window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
     });
-    // 绑定生成报告按钮
+
+    // 生成报告按钮事件
     document.getElementById('generateReport').addEventListener('click', async () => {
       const start = document.getElementById('reportStart').value;
       const end = document.getElementById('reportEnd').value;
@@ -536,8 +560,8 @@
       if (!res.ok) {
         return alert('获取报告数据失败');
       }
-      const { labels, weights, feeds } = await res.json();
-      renderCharts(labels, weights, feeds);
+      const { labels, heights, weights } = await res.json();
+      renderCharts(labels, heights, weights);
       loadHistoryEvents();
       loadHistoryMetrics();
     });

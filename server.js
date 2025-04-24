@@ -225,7 +225,7 @@ app.get('/api/report', (req, res) => {
     cur.setDate(cur.getDate() + 1);
   }
 
-  // 2. 拉体重数据
+  // 2. 拉体重和身高数据
   const weights = labels.map(date => {
     const row = db.prepare(
       'SELECT weight FROM metrics WHERE date = ?'
@@ -233,20 +233,15 @@ app.get('/api/report', (req, res) => {
     return row ? row.weight : null;
   });
 
-  // 3. 拉喂养量（feeding）数据
-  const feeds = labels.map(date => {
-    const rows = db.prepare(
-      'SELECT remark FROM events WHERE date = ? AND type = ?'
-    ).all(date, 'feeding');
-    // remark 格式： "120ml, 30min"
-    return rows.reduce((sum, r) => {
-      const m = r.remark.match(/([\d.]+)\s*ml/);
-      return sum + (m ? parseFloat(m[1]) : 0);
-    }, 0);
+  const heights = labels.map(date => {
+    const row = db.prepare(
+      'SELECT height FROM metrics WHERE date = ?'
+    ).get(date);
+    return row ? row.height : null;
   });
 
-  // 4. 返回
-  res.json({ labels, weights, feeds });
+  // 3. 返回
+  res.json({ labels, weights, heights });
 });
 
 // 删除指定项（同时删除该日期的指标）
