@@ -309,12 +309,10 @@
   });
 
   // 导航切换
-  const btnToday = document.getElementById('btn-today');
-  const btnHistory = document.getElementById('btn-history');
+ document.getElementById('btn-today').addEventListener('click', () => activateTab(true));
+ document.getElementById('btn-history').addEventListener('click', () => activateTab(false));
   const contentToday = document.getElementById('content-today');
   const contentHistory = document.getElementById('content-history');
-  btnToday.addEventListener('click', () => activateTab(true));
-  btnHistory.addEventListener('click', () => activateTab(false));
   function activateTab(today) {
     if (today) {
       btnToday.classList.add('border-indigo-600', 'text-indigo-600');
@@ -385,58 +383,6 @@
     renderTodayMetrics(metrics);
   }
 
-  // 绑定所有删除按钮
-  document.getElementById('todayTable').addEventListener('click', async e => {
-    if (e.target.classList.contains('delete-btn')) {
-      const id = e.target.dataset.id;
-      if (!confirm('确定要删除这条记录吗？')) return;
-      const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-      if (res.status === 204) {
-        loadTodayRecords();
-      } else {
-        alert('删除失败');
-      }
-    }
-  });
-
-  document.getElementById('exportExcel').addEventListener('click', () => {
-    const start = document.getElementById('reportStart').value;
-    const end = document.getElementById('reportEnd').value;
-    if (!start || !end) {
-      alert('请先选择开始和结束日期');
-      return;
-    }
-    // 直接跳转下载
-    window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
-  });
-
-  // 在脚本末尾确保：
-  // 1) 切换日期时自动刷新当日记录
-  document.getElementById('datePicker')
-    .addEventListener('change', loadTodayRecords);
-  // 2) 切换到“当日记录”标签时调用
-  document.getElementById('btn-today')
-    .addEventListener('click', () => loadTodayRecords());
-  // 3) 页面首次加载时初始化
-  window.addEventListener('load', () => loadTodayRecords());
-
-  document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
-    const dateInput = document.getElementById('datePicker');
-    const today = new Date(dateInput.value);
-    today.setDate(today.getDate() - 1);
-    const ymd = today.toISOString().slice(0, 10);
-
-    const res = await fetch(`/api/metrics?date=${ymd}`);
-    const data = await res.json();
-    if (data && (data.height || data.weight)) {
-      document.getElementById('heightInput').value = data.height || '';
-      document.getElementById('weightInput').value = data.weight || '';
-      document.getElementById('remarkInput').value = data.remark || '';
-    } else {
-      alert('未找到昨日身高体重数据');
-    }
-  });
-
   let weightChartInstance = null;
   let feedChartInstance = null;
 
@@ -478,29 +424,6 @@
     }
     );
   }
-
-
-
-  document.getElementById('generateReport')
-    .addEventListener('click', async () => {
-      const start = document.getElementById('reportStart').value;
-      const end = document.getElementById('reportEnd').value;
-      if (!start || !end) {
-        return alert('请先选择开始和结束日期');
-      }
-      // 1. 拉报告数据
-      const res = await fetch(`/api/report?start=${start}&end=${end}`);
-      if (!res.ok) {
-        return alert('获取报告数据失败');
-      }
-      const { labels, weights, feeds } = await res.json();
-
-      // 2. 渲染图表
-      renderCharts(labels, weights, feeds);
-      loadHistoryEvents();
-      loadHistoryMetrics();
-
-    });
 
   async function loadHistoryEvents() {
     const start = document.getElementById('reportStart').value;
@@ -550,21 +473,91 @@
     });
   }
 
+
+// ...existing code...
+document.addEventListener('DOMContentLoaded', () => {
+  // 设置日期选择器为今天
+  const dateInput = document.getElementById('datePicker');
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const ymd = `${year}-${month}-${day}`;
+  dateInput.value = ymd;
+
+  // 事件绑定
+  document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
+  document.getElementById('btn-today').addEventListener('click', () => loadTodayRecords());
+  document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
+    const dateInput = document.getElementById('datePicker');
+    const today = new Date(dateInput.value);
+    today.setDate(today.getDate() - 1);
+    const ymd = today.toISOString().slice(0, 10);
+
+    const res = await fetch(`/api/metrics?date=${ymd}`);
+    const data = await res.json();
+    if (data && (data.height || data.weight)) {
+      document.getElementById('heightInput').value = data.height || '';
+      document.getElementById('weightInput').value = data.weight || '';
+      document.getElementById('remarkInput').value = data.remark || '';
+    } else {
+      alert('未找到昨日身高体重数据');
+    }
+  });
+  document.getElementById('todayTable').addEventListener('click', async e => {
+    if (e.target.classList.contains('delete-btn')) {
+      const id = e.target.dataset.id;
+      if (!confirm('确定要删除这条记录吗？')) return;
+      const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+      if (res.status === 204) {
+        loadTodayRecords();
+      } else {
+        alert('删除失败');
+      }
+    }
+  });
+  document.getElementById('exportExcel').addEventListener('click', () => {
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      alert('请先选择开始和结束日期');
+      return;
+    }
+    window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+  });
+
+  // 绑定生成报告按钮
+  document.getElementById('generateReport').addEventListener('click', async () => {
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      return alert('请先选择开始和结束日期');
+    }
+    const res = await fetch(`/api/report?start=${start}&end=${end}`);
+    if (!res.ok) {
+      return alert('获取报告数据失败');
+    }
+    const { labels, weights, feeds } = await res.json();
+    renderCharts(labels, weights, feeds);
+    loadHistoryEvents();
+    loadHistoryMetrics();
+  });
+  
   // 绑定刷新按钮
   document.getElementById('btn-refresh-events').addEventListener('click', () => {
     loadHistoryEvents();
     loadHistoryMetrics();
   });
 
-  // 生成报告后同步刷新
-  document.getElementById('generateReport')
-    .addEventListener('click', async () => {
-      // ...原有代码...
+  const btnRefresh = document.getElementById('btn-refresh');
+  if (btnRefresh) {
+    btnRefresh.addEventListener('click', () => {
       loadHistoryEvents();
       loadHistoryMetrics();
     });
+  }
 
-  // 表单提交
+  // 提交事件表单
   document.getElementById('eventForm').addEventListener('submit', async e => {
     e.preventDefault();
     const date = document.getElementById('datePicker').value;
@@ -600,54 +593,33 @@
     e.target.reset();
   });
 
-
   // 提交每日指标
   document.getElementById('metricsForm').addEventListener('submit', async e => {
     e.preventDefault();
-
     const date = document.getElementById('datePicker').value;
     const heightVal = document.getElementById('heightInput').value;
     const weightVal = document.getElementById('weightInput').value;
     const remarkVal = document.getElementById('remarkInput').value;
-
-    // 如果三项都没填，直接返回
     if (!heightVal && !weightVal && !remarkVal) {
       alert('请至少填写一项');
       return;
     }
-
     const payload = { date };
     if (heightVal !== '') payload.height = parseFloat(heightVal);
     if (weightVal !== '') payload.weight = parseFloat(weightVal);
     if (remarkVal !== '') payload.remark = remarkVal;
-
     await fetch('/api/metrics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-
     loadTodayRecords();
     e.target.reset();
   });
 
-  // 页面首次加载
-  document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
-  document.getElementById('btn-refresh').addEventListener('click', () => {
-    loadHistoryEvents();
-    loadHistoryMetrics();
-  });
+  // 初始化
+  activateTab(true);
+  loadTodayRecords();
+});
 
-  // web load event
-  window.addEventListener('load', () => {
-    // 直接用本地时间，保证中国用户看到的就是中国当天
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const ymd = `${year}-${month}-${day}`;
-    document.getElementById('datePicker').value = ymd;
-
-    activateTab(true);
-  });
 </script>
