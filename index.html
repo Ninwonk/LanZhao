@@ -232,7 +232,6 @@
                   <th class="py-2 px-4 border-b">类型</th>
                   <th class="py-2 px-4 border-b">详情</th>
                   <th class="py-2 px-4 border-b">备注</th>
-                  <th class="py-2 px-4 border-b">操作</th>
                 </tr>
               </thead>
               <tbody id="historyEventsTable"></tbody>
@@ -434,42 +433,39 @@
     }
     );
   }
-  
+
   // 加载历史事件
   async function loadHistoryEvents() {
-  const start = document.getElementById('reportStart').value;
-  const end = document.getElementById('reportEnd').value;
-  if (!start || !end) {
-    document.getElementById('historyEventsTable').innerHTML = '';
-    return;
-  }
-  const res = await fetch(`/api/history/events?start=${start}&end=${end}`);
-  const rows = await res.json();
-  const tbody = document.getElementById('historyEventsTable');
-  tbody.innerHTML = '';
-  rows.forEach(ev => {
-    let detail = ev.details || '';
-    if (ev.type === 'nutrition') {
-      detail = `${ev.nutrition || ''}${ev.remark ? '，' + ev.remark : ''}`;
-    } else if (ev.type === 'care') {
-      detail = `${ev.care || ''}${ev.remark ? '，' + ev.remark : ''}`;
-    } else if (ev.type === 'diaper') {
-      detail = ev.care || '';
+    const start = document.getElementById('reportStart').value;
+    const end = document.getElementById('reportEnd').value;
+    if (!start || !end) {
+      document.getElementById('historyEventsTable').innerHTML = '';
+      return;
     }
-    const remark = (ev.type === 'nutrition' || ev.type === 'care') ? '' : (ev.remark || '');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="py-2 px-4 border-b">${ev.date} ${ev.time || ''}</td>
-      <td class="py-2 px-4 border-b">${typeMap[ev.type] || ev.type}</td>
-      <td class="py-2 px-4 border-b">${detail}</td>
-      <td class="py-2 px-4 border-b">${remark}</td>
-      <td class="py-2 px-4 border-b">
-        <a href="#" data-id="${ev.id}" class="delete-btn" style="color:red;">删除</a>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    const res = await fetch(`/api/history/events?start=${start}&end=${end}`);
+    const rows = await res.json();
+    const tbody = document.getElementById('historyEventsTable');
+    tbody.innerHTML = '';
+    rows.forEach(ev => {
+      let detail = ev.details || '';
+      if (ev.type === 'nutrition') {
+        detail = `${ev.nutrition || ''}${ev.remark ? '，' + ev.remark : ''}`;
+      } else if (ev.type === 'care') {
+        detail = `${ev.care || ''}${ev.remark ? '，' + ev.remark : ''}`;
+      } else if (ev.type === 'diaper') {
+        detail = ev.care || '';
+      }
+      const remark = (ev.type === 'nutrition' || ev.type === 'care') ? '' : (ev.remark || '');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+    <td class="py-2 px-4 border-b">${ev.date} ${ev.time || ''}</td>
+    <td class="py-2 px-4 border-b">${typeMap[ev.type] || ev.type}</td>
+    <td class="py-2 px-4 border-b">${detail}</td>
+    <td class="py-2 px-4 border-b">${remark}</td>
+  `;
+      tbody.appendChild(tr);
+    });
+  }
 
   async function loadHistoryMetrics() {
     const start = document.getElementById('reportStart').value;
