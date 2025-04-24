@@ -16,6 +16,7 @@
     <!-- 头部 -->
     <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
       <h1 class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">王澜昭喂养记录</h1>
+      <div id="daysSinceBirth" class="text-green-700 text-lg font-semibold mx-4"></div>
       <input type="date" id="datePicker" class="border border-gray-300 rounded-md p-2" />
     </header>
 
@@ -309,6 +310,18 @@
     }
   }
 
+  const birthday = '2025-01-22';
+
+  function updateDaysSinceBirth() {
+    const dateInput = document.getElementById('datePicker');
+    const daysDiv = document.getElementById('daysSinceBirth');
+    const today = dateInput.value ? new Date(dateInput.value) : new Date();
+    const birth = new Date(birthday);
+    // 计算天数（含当天）
+    const diff = Math.floor((today - birth) / (1000 * 60 * 60 * 24)) + 1;
+    daysDiv.textContent = `出生第 ${diff} 天`;
+  }
+
   // 渲染当日事件
   function renderTodayEvents(events) {
     const tbody = document.getElementById('todayTable');
@@ -457,8 +470,6 @@
     });
   }
 
-
-  // ...existing code...
   document.addEventListener('DOMContentLoaded', () => {
     // 设置日期选择器为今天
     const dateInput = document.getElementById('datePicker');
@@ -469,9 +480,11 @@
     const ymd = `${year}-${month}-${day}`;
     dateInput.value = ymd;
 
-    // 事件绑定
+    // 当天日期更改事件
     document.getElementById('datePicker').addEventListener('change', loadTodayRecords);
+    // 日期选择今天按钮事件
     document.getElementById('btn-today').addEventListener('click', () => loadTodayRecords());
+    // 填充昨日指标按钮事件
     document.getElementById('fillYesterdayMetrics').addEventListener('click', async () => {
       const dateInput = document.getElementById('datePicker');
       const today = new Date(dateInput.value);
@@ -488,6 +501,7 @@
         alert('未找到昨日身高体重数据');
       }
     });
+    // 当日概览表格删除按钮事件
     document.getElementById('todayTable').addEventListener('click', async e => {
       if (e.target.classList.contains('delete-btn')) {
         const id = e.target.dataset.id;
@@ -500,6 +514,7 @@
         }
       }
     });
+    // 导出Excel按钮事件
     document.getElementById('exportExcel').addEventListener('click', () => {
       const start = document.getElementById('reportStart').value;
       const end = document.getElementById('reportEnd').value;
@@ -509,7 +524,6 @@
       }
       window.open(`/export?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
     });
-
     // 绑定生成报告按钮
     document.getElementById('generateReport').addEventListener('click', async () => {
       const start = document.getElementById('reportStart').value;
@@ -532,14 +546,6 @@
       loadHistoryEvents();
       loadHistoryMetrics();
     });
-
-    const btnRefresh = document.getElementById('btn-refresh');
-    if (btnRefresh) {
-      btnRefresh.addEventListener('click', () => {
-        loadHistoryEvents();
-        loadHistoryMetrics();
-      });
-    }
 
     // 提交事件表单
     document.getElementById('eventForm').addEventListener('submit', async e => {
@@ -606,6 +612,9 @@
       loadTodayRecords();
       e.target.reset();
     });
+
+    updateDaysSinceBirth();
+    document.getElementById('datePicker').addEventListener('change', updateDaysSinceBirth);
 
     // 初始化
     activateTab(true);
