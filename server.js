@@ -149,13 +149,6 @@ app.get('/api/history/events', (req, res) => {
     FROM events
     WHERE date BETWEEN ? AND ?
     ORDER BY date DESC, 
-      CASE type
-        WHEN 'feeding' THEN 1
-        WHEN 'diaper' THEN 2
-        WHEN 'nutrition' THEN 3
-        WHEN 'care' THEN 4
-        ELSE 5
-      END ASC,
       time DESC
   `).all(start, end);
   res.json(rows);
