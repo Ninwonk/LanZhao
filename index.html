@@ -309,10 +309,12 @@
   });
 
   // 导航切换
- document.getElementById('btn-today').addEventListener('click', () => activateTab(true));
- document.getElementById('btn-history').addEventListener('click', () => activateTab(false));
+  const btnToday = document.getElementById('btn-today');
+  const btnHistory = document.getElementById('btn-history');
   const contentToday = document.getElementById('content-today');
   const contentHistory = document.getElementById('content-history');
+  btnToday.addEventListener('click', () => activateTab(true));
+  btnHistory.addEventListener('click', () => activateTab(false));
   function activateTab(today) {
     if (today) {
       btnToday.classList.add('border-indigo-600', 'text-indigo-600');
